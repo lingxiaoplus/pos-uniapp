@@ -24,12 +24,28 @@
 			}
 		},
 		methods: {
-			
+			async isLogin() {
+				//判断缓存中是否登录过，直接登录
+				try{
+					let resp = await this.$request.get("/user/verify");
+					if (resp.data.code != 200) {
+						return;
+					}
+					console.log("已经登录了",resp.data)
+					uni.setStorageSync("user_info",resp.data.data)
+					uni.redirectTo({
+						url:'../index/index'
+					})
+				}catch(e){
+					console.log("用户未登录")
+					uni.navigateTo({
+						url:"../user/login"
+					})
+				}
+			},
 		},
 		mounted() {
-			uni.navigateTo({
-				url:"../user/login"
-			})
+			this.isLogin()
 		}
 	}
 </script>

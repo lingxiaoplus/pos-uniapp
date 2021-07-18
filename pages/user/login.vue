@@ -3,9 +3,8 @@
 		<u-toast ref="uToast" />
 		<view class="content">
 			<!-- 头部logo -->
-			<view class="header">
-				<image 
-				src="../../static/ic_launcher.png"></image>
+			<view class="header" style="background-color: #FFFFFF;">
+				<image src="/static/ic_launcher.png" style="width: 160rpx;height: 160rpx;"></image>
 			</view>
 			<!-- 主体表单 -->
 			<view class="main">
@@ -30,19 +29,18 @@
 			</view>
 
 			<!-- 底部信息 -->
-			<view class="footer">
+			<!-- <view class="footer">
 				<navigator url="forget" open-type="navigate">找回密码</navigator>
 				<text>|</text>
 				<navigator url="register" open-type="navigate">注册账号</navigator>
-			</view>
+			</view> -->
 		</view>
 	</view>
 </template>
 
 <script>
 	var _this;
-	import wInput from '../../components/watch-login/watch-input.vue' //input
-	import wButton from '../../components/watch-login/watch-button.vue' //button
+	
 
 	export default {
 		data() {
@@ -56,16 +54,18 @@
 				}
 			};
 		},
-		components: {
-			wInput,
-			wButton,
-		},
+		
 		mounted() {
 			_this = this;
-			//this.isLogin();
+			let loginAccount = uni.getStorageSync("loginAccount")
+			if(loginAccount){
+				this.phoneData = loginAccount.account
+				this.passData = loginAccount.password
+			}
+			
 		},
 		onLoad() {
-			this.isLogin();
+			
 		},
 		methods: {
 			async isLogin() {
@@ -112,7 +112,7 @@
 
 				try {
 					let resp = await this.$request.post("/user/login", {
-						data: {
+						data: { 
 							account: this.phoneData,
 							password: this.passData,
 						}
@@ -136,6 +136,10 @@
 						icon: false,
 						position: 'bottom',
 						type: 'success'
+					})
+					uni.setStorageSync("loginAccount",{
+						account: this.phoneData,
+						password: this.passData
 					})
 				} catch (e) {
 					console.log("登录失败", e);
