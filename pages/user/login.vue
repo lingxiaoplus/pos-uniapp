@@ -156,19 +156,30 @@
 			},
 			login_weixin() {
 				//微信登录
-				uni.showToast({
-					icon: 'none',
+				this.$refs.uToast.show({
+					title: '敬请期待',
 					position: 'bottom',
-					title: '...'
-				});
+					icon: false,
+					type: 'success'
+				})
 			},
 			login_weibo() {
 				//微博登录
-				this.$toast.info('敬请期待');
+				this.$refs.uToast.show({
+					title: '敬请期待',
+					position: 'bottom',
+					icon: false,
+					type: 'success'
+				})
 			},
 			login_github() {
 				//github登录
-				this.$toast.info('敬请期待');
+				this.$refs.uToast.show({
+					title: '敬请期待',
+					position: 'bottom',
+					icon: false,
+					type: 'success'
+				})
 			}
 		}
 	}

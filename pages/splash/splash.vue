@@ -10,7 +10,7 @@
 			<u-loading color="primary" size="64" :show="loading"></u-loading>
 		</view>
 		<view class="u-font-lg">
-			四川凌霄无限科技有限公司
+			成都养利网络科技有限公司
 		</view>
 		
 	</view>

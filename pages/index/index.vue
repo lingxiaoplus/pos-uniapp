@@ -2,6 +2,13 @@
 	<view>
 		<u-navbar :is-back="false" title="pos订单" :background="background" title-color="#fff" back-icon-color="#ffffff" :back-text-style="{ color: '#fff' }"></u-navbar>
 		<view class="content">
+		<view v-if="isExpatriates">
+			<v-cell-group>
+				<u-cell-item icon="bell" title="当前是否接单" :arrow="false">
+					<u-switch slot="right-icon" v-model="isEnabled" @change="updateUserState()"></u-switch>
+				</u-cell-item>
+			</v-cell-group>
+		</view>
 		<u-swiper :list="list"></u-swiper>
 		<u-grid :col="3">
 			<u-grid-item @click="onGridClick(item.url)" class="ripple" v-for="(item,index) in homeList" :key="index">
@@ -55,7 +62,10 @@ export default {
 					image: 'https://cdn.uviewui.com/uview/swiper/3.jpg',
 					title: '谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳'
 				}
-			]
+			],
+			isEnabled: false,
+			user: '',
+			isExpatriates: false
 		};
 	},
 	onLoad() {
@@ -75,7 +85,12 @@ export default {
 					});
 					return;
 				}
+				this.user = resp.data.data;
+				this.isEnabled = this.user.status===0?true:false;
 				console.log('已经登录了', resp.data);
+				if(this.user.roles[0].roleTag === 'expatriates'){
+					this.isExpatriates = true;
+				}
 			} catch (e) {
 				console.log('用户未登录');
 			}
@@ -84,6 +99,28 @@ export default {
 			uni.navigateTo({
 				url: url
 			});
+		},
+		async updateUserState(){
+			try {
+				uni.showLoading({
+					title:"更新状态中..."
+				})
+				let resp = await this.$request.post('/user/change',{
+					data:{
+						userId: this.user.userId,
+						status: this.isEnabled?0:1
+					}
+				});
+				if (resp.data.code != 200) {
+					return;
+				}
+				this.isLogin()
+				console.log('修改成功', resp.data);
+			} catch (e) {
+				console.log('修改失败');
+			}finally{
+				uni.hideLoading()
+			}
 		}
 	}
 };
