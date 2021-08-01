@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "pinyin-pro": "^3.3.0",
     "uview-ui": "^1.8.4"
   }
 }

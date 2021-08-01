@@ -188,4 +188,12 @@
 <style>
 	@import url("../../components/watch-login/css/icon.css");
 	@import url("./css/main.css");
+	.login{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.content{
+		margin-top: 100rpx;
+	}
 </style>

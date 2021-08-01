@@ -26,6 +26,29 @@
 				<u-form-item label-width="160rpx" label="上传图片" required v-if="form.state == 'order_status_out_success' || form.state == 'order_status_out_fail'">
 					<u-upload :max-count="maxCount" :show-progress="false" :deletable="deletable" :action="action" :file-list="form.resourceList"></u-upload>
 				</u-form-item>
+				
+				
+				<u-collapse v-show="form.feedBackList && form.feedBackList.length > 0">
+						<u-collapse-item title="反馈记录" >
+							<view v-for="(feedback,index) in form.feedBackList" :key="feedback.id">
+								<u-card :title="feedback.user.nickname" :show-head="true"
+								:border-radius="10" :padding="20"  margin="1rpx"
+								:sub-title="feedback.createAt" :body-style="cardBody"
+								>
+								<view slot="body">
+									<u-row gutter="16" justify="center">
+										<u-col span="12">
+										<view class="u-body-item-title u-line-10">
+											{{ feedback.content }}
+										</view>
+										</u-col>
+									</u-row>
+								</view>
+								</u-card>
+							</view>
+						</u-collapse-item>
+				</u-collapse>
+				
 				<u-button v-if="pageType != 'view'" :custom-style="customStyle" type="primary" :ripple="true" @click="save()" :loading="loading">提交</u-button>
 			</u-form>
 		</view>
@@ -58,8 +81,9 @@ export default {
 				machineCode: '',
 				brant: '',
 				resourceList: [],
-				longitude: '',
-				latitude: ''
+			},
+			cardBody:{
+				
 			},
 			rules: {
 				username: [
@@ -125,7 +149,7 @@ export default {
 				width: '600rpx',
 				marginBottom: '20rpx'
 			},
-			action: 'http://test.pos.yinqkj.cn/file'
+			action: getApp().globalData.action
 		};
 	},
 	
@@ -313,4 +337,9 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+	.u-body-item-title {
+			font-size: 20rpx;
+			color: #333;
+		}
+</style>

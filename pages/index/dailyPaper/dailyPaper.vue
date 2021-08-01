@@ -2,8 +2,10 @@
 	<view>
 		<u-navbar back-text="返回" title="日报" :background="background" title-color="#fff" back-icon-color="#ffffff" :back-text-style="{ color: '#fff' }"></u-navbar>
 		<view class="content">
-			<u-empty text="日报为空" mode="list" v-if="paperList.length < 1"></u-empty>
-			<view v-for="daily in paperList" :key="daily.id" v-else>
+			<wyb-loading ref="loading" :hide-delay="600" loading-type="scale-line"/>
+			<view v-if="paperList.length < 1" class="u-flex u-col-center u-row-center" style="height: 800rpx;"><u-empty text="日报为空" mode="list"></u-empty></view>
+			<view v-for="(daily,index) in paperList" :key="daily.id" v-else>
+				<uni-transition ref="ani" :mode-class="['fade','zoom-in']" :duration="500" :show="showAnimation" timingFunction="ease-in-out" :delay="(index + 1)*100">
 				<u-card :title="daily.nickname" :show-head="true" 
 				:border-radius="10" :padding="20"  margin="16rpx"
 				:sub-title="daily.createAt"
@@ -65,6 +67,7 @@
 						</u-row>
 					</view>
 				</u-card>
+				</uni-transition>
 			</view>
 			<u-loadmore v-if="totalPage > 0" :status="status" />
 		</view>
@@ -108,6 +111,7 @@ export default {
 			status: 'loadmore',
 			animationData: {},
 			userType: '',
+			showAnimation: true
 		};
 	},
 	onPullDownRefresh() {
@@ -132,7 +136,7 @@ export default {
 		async getDailyPaperList() {
 			try {
 				this.status = 'loading';
-				uni.showLoading({});
+				this.$refs.loading.showLoading()
 				let resp = await this.$request.get('/dailyPaper/list?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize+ "&userType=" + this.userType);
 				if (resp.data.code != 200) {
 					return;
@@ -147,7 +151,7 @@ export default {
 				console.log('订单状态失败', e);
 			} finally {
 				uni.stopPullDownRefresh();
-				uni.hideLoading();
+				this.$refs.loading.hideLoading()
 			}
 		},
 		onReachBottom() {
@@ -190,6 +194,9 @@ export default {
 			//this.animationData = animation.export();
 			animation.translate(30).step()
 			 this.animationData = animation.export()
+		},
+		onItemClick(dailyPaper){
+			
 		}
 	}
 };

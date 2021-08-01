@@ -25,7 +25,7 @@ app.$mount()
   		icon:'none'
   	  })
 	  uni.redirectTo({
-	  	url:'/pages/user/login.vue'
+	  	url:'/pages/user/login'
 	  })
   	  console.log("未登录");
   	  return Promise.reject('未登录')

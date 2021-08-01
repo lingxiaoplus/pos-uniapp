@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<u-top-tips ref="uTips"></u-top-tips>
+		<u-toast ref="uToast" />
 		<u-navbar back-text="返回" title="编辑日报" :background="background" title-color="#fff" back-icon-color="#ffffff" :back-text-style="{ color: '#fff' }"></u-navbar>
 		<view class="content u-margin-20">
 			<u-form :model="dailyPaper" ref="uForm">
@@ -175,77 +175,70 @@ export default {
 			}); */
 			if(this.showTeleMarketing){
 				if(!this.dailyPaper.totalCall){
-					this.$refs.uTips.show({
-									title: '请输入总呼出数量',
-									type: 'warning',
-									duration: '1500'
-					})
+					this.$refs.uToast.show({
+						title: '请输入总呼出数量',
+						position: 'bottom',
+						type: 'warning'
+					});
 					return;
 				}
 				if(!this.dailyPaper.vaildCall){
-					
-					this.$refs.uTips.show({
-									title: '请输入有效通话数量',
-									type: 'warning',
-									duration: '1500'
-					})
+					this.$refs.uToast.show({
+						title: '请输入有效通话数量',
+						position: 'bottom',
+						type: 'warning'
+					});
 					return;
 				}
 				if(!this.dailyPaper.target){
-					this.$refs.uTips.show({
-									title: '请输入今日意向数量',
-									type: 'warning',
-									duration: '1500'
-					})
-					ret
+					this.$refs.uToast.show({
+						title: '请输入今日意向数量',
+						position: 'bottom',
+						type: 'warning'
+					});
 					return;
 				}
 				if(!this.dailyPaper.monthTarget){
-					this.$refs.uTips.show({
-									title: '请输入当月目标数量',
-									type: 'warning',
-									duration: '1500'
-					})
-					ret
+					this.$refs.uToast.show({
+						title: '请输入当月目标数量',
+						position: 'bottom',
+						type: 'warning'
+					});
 					return;
 				}
 				if(!this.dailyPaper.summary){
-					this.$refs.uTips.show({
-									title: '请输入总结',
-									type: 'warning',
-									duration: '1500'
-					})
-					ret
+					this.$refs.uToast.show({
+						title: '请输入总结',
+						position: 'bottom',
+						type: 'warning'
+					});
 					return;
 				}
 			}
 			
 			if(!this.dailyPaper.activeSuccess){
-				this.$refs.uTips.show({
-								title: '请输入激活成功数量',
-								type: 'warning',
-								duration: '1500'
-				})
-				ret
+				this.$refs.uToast.show({
+					title: '请输入激活成功数量',
+					position: 'bottom',
+					type: 'warning'
+				});
 				return;
 			}
 			if(this.showExpatriates){
 				if(!this.dailyPaper.actuallyDoor){
-					this.$refs.uTips.show({
-									title: '请输入实际上门',
-									type: 'warning',
-									duration: '1500'
-					})
-					ret
+					this.$refs.uToast.show({
+						title: '请输入实际上门',
+						position: 'bottom',
+						type: 'warning'
+					});
 					return;
 				}
 				if(!this.dailyPaper.totalOrder){
-					this.$refs.uTips.show({
-									title: '请输入总派单',
-									type: 'warning',
-									duration: '1500'
-					})
-					ret
+					this.$refs.uToast.show({
+						title: '请输入总派单',
+						position: 'bottom',
+						type: 'warning'
+					});
 					return;
 				}
 			}

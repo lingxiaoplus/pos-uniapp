@@ -95,7 +95,21 @@
     "h5" : {
         "uniStatistics" : {
             "enable" : false
-        }
+        },
+        "title" : "pos机订单系统",
+        "sdkConfigs" : {
+            "maps" : {
+                "qqmap" : {
+                    "key" : ""
+                }
+            }
+        },
+        "optimization" : {
+            "treeShaking" : {
+                "enable" : true
+            }
+        },
+        "domain" : "test.moblie.yinqkj.cn"
     },
     "mp-qq" : {
         "uniStatistics" : {

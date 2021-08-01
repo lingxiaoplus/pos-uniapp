@@ -1,7 +1,7 @@
 <template>
 	<view class="main">
 		<view class="logo">
-			<image class="image" src="../../static/ic_launcher.png">
+			<image class="image" src="../../static/splash.png">
 				
 			</image>
 		</view>
@@ -9,9 +9,9 @@
 		<view style="position: absolute;bottom: 100rpx;">
 			<u-loading color="primary" size="64" :show="loading"></u-loading>
 		</view>
-		<view class="u-font-lg">
+		<!-- <view class="u-font-lg">
 			成都养利网络科技有限公司
-		</view>
+		</view> -->
 		
 	</view>
 </template>
@@ -63,7 +63,7 @@
 	margin-top: 100rpx;
 }
 .logo image {
-	width: 300rpx;
-	height: 300rpx;
+	width: 720rpx;
+	height: 720rpx;
 }
 </style>
