@@ -9,10 +9,10 @@
 					</u-cell-item>
 				</v-cell-group>
 			</view>
-			<u-swiper :list="list"></u-swiper>
+			<u-swiper :list="list" effect3d></u-swiper>
 			<u-grid :col="3">
 				<u-grid-item @click="onGridClick(item.url)" class="ripple" v-for="(item, index) in homeList" :key="index">
-					<uni-transition ref="ani" :mode-class="['fade', 'zoom-in']" :duration="500" :show="showAnimation" timingFunction="ease-in-out" :delay="(index + 1) * 100">
+					<uni-transition ref="ani" :mode-class="['fade', 'zoom-in']" :duration="100" :show="showAnimation" timingFunction="ease-in-out" :delay="(index + 1) * 100">
 						<view class="u-flex u-col-center u-row-center" style="flex-direction: column;">
 							<image class="image" :src="item.icon"></image>
 							<view class="grid-text">{{ item.title }}</view>
@@ -93,6 +93,11 @@ export default {
 					title: "数据汇总",
 					url: "order/order"
 				}, */
+				{
+					icon: "../../static/ic_img_6.png",
+					title: "设备管理",
+					url: "device/device"
+				},
 				{
 					icon: '../../static/ic_img_1.png',
 					title: '个人中心',

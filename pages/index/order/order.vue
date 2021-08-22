@@ -1,95 +1,114 @@
 <template>
 	<view>
-		<u-navbar back-text="返回" title="订单" :background="background" title-color="#fff" back-icon-color="#ffffff" :back-text-style="{ color: '#fff' }">
-			<!-- <view class="slot-wrap">
-				<view class="navbar-right" slot="right">
-					<view class="right-item">
-						<u-icon name="search" color="white" size="32"></u-icon>
-						
-					</view>
-				</view>
-			</view> -->
-		</u-navbar>
+		<u-navbar back-text="返回" title="订单" :background="background" title-color="#fff" back-icon-color="#ffffff" :back-text-style="{ color: '#fff' }"></u-navbar>
 		<u-toast ref="uToast" />
+		<wyb-loading ref="loading" :hide-delay="100" loading-type="scale-line" />
+
 		<view class="content">
-			<!-- <u-sticky offset-top="0">
-				
-			</u-sticky> -->
-			<!-- 只能有一个根元素 -->
-			<u-tabs :list="stateList" :is-scroll="true" :current="current" @change="change" overflow-count="9000"></u-tabs>
-
-			<wyb-loading ref="loading" :hide-delay="600" loading-type="scale-line" />
-			<view v-if="orderList.length < 1" class="u-flex u-col-center u-row-center" style="height: 800rpx;"><u-empty text="订单为空" mode="list"></u-empty></view>
-
-			<view v-for="(order, index) in orderList" :key="order.id" v-else>
-				<uni-transition ref="ani" :mode-class="['fade', 'zoom-in']" :duration="200" :show="showAnimation" timingFunction="ease-in-out" :delay="(index + 1) * 100">
-					<u-card :show-head="false" :show-foot="false" :border-radius="10" :padding="20" margin="16rpx" box-shadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)">
-						<view slot="body" @click="onItemClick(order)">
-							<view class="u-body-item-title u-line-2 card-field">
-								<view class="card-title">
-									用户姓名
-								</view>
-								{{ order.username }}
-							</view>
-							<u-divider :use-slot="false" half-width='350'></u-divider>
-							<view class="u-body-item-title u-line-2 card-field">
-								<view class="card-title">
-									用户电话
-								</view>
-								{{ order.phone }}
-							</view>
-							<u-divider :use-slot="false" half-width='350'></u-divider>
-							
-							<view class="u-body-item-title u-line-2 card-field">
-								<view class="card-title">
-									营销时间
-								</view>
-								{{ order.createAt }}
-							</view>
-							<u-divider :use-slot="false" half-width='350'></u-divider>
-							
-							<view class="u-body-item-title u-line-2 card-field">
-								<view class="card-title">
-									电销
-								</view>
-								{{ order.createUser ? order.createUser.nickname : '' }}
-							</view>
-							<u-divider :use-slot="false" half-width='350'></u-divider>
-							
-							<view class="u-body-item-title u-line-2 card-field">
-								<view class="card-title">
-									外派
-								</view>
-								{{ order.expatriatesUser ? order.expatriatesUser.nickname : '' }}
-							</view>
-							<u-divider :use-slot="false" half-width='350'></u-divider>
-							
-							<view class="u-body-item-title u-line-2 card-field">
-								<view class="card-title">
-									地址
-								</view>
-								{{ order.address }}
-							</view>
-							
-							<!-- <view class="u-body-item-title u-line-2">用户姓名：{{ order.username }}</view>
-							<view class="u-body-item-title u-line-2">用户电话：{{ order.phone }}</view>
-							<view class="u-body-item-title u-line-2">营销时间：{{ order.createAt }}</view>
-							<view class="u-body-item-title u-line-2">预约时间：{{ order.outboundAt }}</view>
-							<view class="u-body-item-title u-line-2">外派：{{ order.expatriatesUser ? order.expatriatesUser.nickname : '' }}</view>
-							<view class="u-body-item-title u-line-2">地址：{{ order.address }}</view> -->
+			<view class="wrap">
+				<view class="u-tabs-box">
+					<u-tabs-swiper ref="uTabs" :list="stateList" :current="current" 
+					@change="tabsChange" :is-scroll="false"></u-tabs-swiper></view>
+				<swiper class="swiper-box" :current="swiperCurrent" 
+				@transition="transition" @animationfinish="animationfinish">
+					<swiper-item class="swiper-item" v-for="(item, i) in stateList" :key="i">
+						<view v-if="!orderList[current] || orderList[current].length < 1" class="u-flex u-col-center u-row-center" style="height: 800rpx;">
+							<u-empty text="订单为空" mode="list" />
 						</view>
-					</u-card>
-				</uni-transition>
+						<scroll-view scroll-y style="width: 100%;height: 100%;" @scrolltolower="reachBottom" v-else>
+							<view class="page-box">
+								<view class="order" v-for="(order, index) in orderList[i]" :key="order.id">
+									<u-card
+										:show-head="false"
+										:show-foot="false"
+										:border-radius="10"
+										:padding="20"
+										margin="16rpx"
+										box-shadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+									>
+										<view slot="body" @click="onItemClick(order)">
+											<view class="u-body-item-title u-line-2 card-field">
+												<view class="card-title">用户姓名</view>
+												{{ order.username }}
+											</view>
+											<u-divider :use-slot="false" half-width="350"></u-divider>
+											<view class="u-body-item-title u-line-2 card-field">
+												<view class="card-title">用户电话</view>
+												{{ order.phone }}
+											</view>
+											<u-divider :use-slot="false" half-width="350"></u-divider>
+
+											<view class="u-body-item-title u-line-2 card-field">
+												<view class="card-title">营销时间</view>
+												{{ order.createAt }}
+											</view>
+											<u-divider :use-slot="false" half-width="350"></u-divider>
+
+											<view class="u-body-item-title u-line-2 card-field">
+												<view class="card-title">预约时间</view>
+												{{ order.outboundAt }}
+											</view>
+											<u-divider :use-slot="false" half-width="350"></u-divider>
+
+											<view class="u-body-item-title u-line-2 card-field">
+												<view class="card-title">订单流水</view>
+												{{ order.serialNumber }}
+											</view>
+											<u-divider :use-slot="false" half-width="350"></u-divider>
+
+											<view class="u-body-item-title u-line-2 card-field">
+												<view class="card-title">银行</view>
+												{{ order.back }}
+											</view>
+											<u-divider :use-slot="false" half-width="350"></u-divider>
+
+											<view class="u-body-item-title u-line-2 card-field">
+												<view class="card-title">电销</view>
+												<u-tag mode="light" :text="order.createUser ? order.createUser.nickname : ''">
+													<!-- {{ order.createUser ? order.createUser.nickname : '' }} -->
+												</u-tag>
+											</view>
+											<u-divider :use-slot="false" half-width="350"></u-divider>
+
+											<view class="u-body-item-title u-line-2 card-field">
+												<view class="card-title">外派</view>
+												{{ order.expatriatesUser ? order.expatriatesUser.nickname : '' }}
+											</view>
+											<u-divider :use-slot="false" half-width="350"></u-divider>
+
+											<view class="u-body-item-title u-line-2 card-field">
+												<view class="card-title">地址</view>
+												{{ order.address }}
+											</view>
+										</view>
+									</u-card>
+								</view>
+								<u-loadmore :status="status" />
+							</view>
+						</scroll-view>
+					</swiper-item>
+				</swiper>
 			</view>
+
 			<uni-drawer ref="showRight" mode="right" :mask-click="false">
 				<scroll-view style="height: 100%;" scroll-y="true">
 					<view style="height: 140rpx;"></view>
 					<u-field class="u-margin-top-40" v-model="queryParams.username" maxlength="11" label="姓名" placeholder="请输入姓名"></u-field>
 					<u-field v-model="queryParams.phone" maxlength="11" label="电话" placeholder="请输入电话"></u-field>
 					<u-field v-model="queryParams.address" maxlength="120" label="地址" placeholder="请输入地址"></u-field>
-					<u-field v-model="queryParams.back" maxlength="20" label="银行" placeholder="请输入银行"></u-field>
+					<u-field
+						v-model="queryParams.back"
+						type="select"
+						@click="showBankSelect = true"
+						label="银行"
+						:disabled="true"
+						right-icon="arrow-down-fill"
+						placeholder="请输入银行"
+					></u-field>
 					<!-- <u-field maxlength="20" label="部门" :disabled="true" right-icon="arrow-down-fill" placeholder="请输入部门">
 					</u-field> -->
+
+					<u-picker mode="selector" range-key="name" :range="bankList" v-model="showBankSelect" @confirm="bankConfirm"></u-picker>
 
 					<u-row justify="center" class="u-margin-20">
 						<u-col span="6"><u-button type="info" shape="circle" :plain="true" :ripple="true" @click="closeDrawer('cancel')">取消</u-button></u-col>
@@ -97,41 +116,43 @@
 					</u-row>
 				</scroll-view>
 			</uni-drawer>
-			<u-loadmore v-if="totalPage > 0" :status="status" />
-			<u-action-sheet @click="clickSheet" :list="sheetList" v-model="showSheet"></u-action-sheet>
-			<uni-fab :pattern="pattern" :content="btnContent" horizontal="right" vertical="bottom" direction="vertical" @trigger="trigger"></uni-fab>
-		</view>
-		<u-modal show-cancel-button @confirm="deleteOrder(order.id)" v-model="showDelete" content="是否删除该订单?"></u-modal>
-		<view>
-			<u-popup v-model="showSendPop" mode="bottom" height="50%" close-icon="close" close-icon-size="60">
-				<u-field
-					@click="showDeptSelect = true"
-					v-model="departmentList[departIndex].name"
-					:disabled="true"
-					label="部门"
-					placeholder="请选择部门"
-					right-icon="arrow-down-fill"
-				></u-field>
-				<u-picker v-model="showDeptSelect" @confirm="departPicker" mode="selector" :default-selector="[0]" range-key="name" :range="departmentList"></u-picker>
 
-				<u-field
-					@click="showPersonSelect = true"
-					v-model="personList[personIndex].nickname"
-					:disabled="true"
-					label="人员"
-					placeholder="请选择人员"
-					right-icon="arrow-down-fill"
-				></u-field>
-				<u-picker v-model="showPersonSelect" @confirm="personPicker" mode="selector" :default-selector="[0]" range-key="nickname" :range="personList"></u-picker>
-				<u-row gutter="16" justify="center">
-					<u-col span="6">
-						<u-row justify="center"><u-button @click="showSendPop = false" size="medium" type="warning">取消</u-button></u-row>
-					</u-col>
-					<u-col span="6" align="center">
-						<u-row justify="center"><u-button @click="sendOrder" size="medium" type="success">确认</u-button></u-row>
-					</u-col>
-				</u-row>
-			</u-popup>
+			<u-action-sheet @click="clickSheet" :list="sheetList" v-model="showSheet"></u-action-sheet>
+			<uni-fab :pattern="pattern" :content="btnContent" horizontal="right" 
+			vertical="bottom" direction="vertical" @trigger="trigger"></uni-fab>
+
+			<u-modal show-cancel-button @confirm="deleteOrder(order.id)" v-model="showDelete" content="是否删除该订单?"></u-modal>
+			<view>
+				<u-popup v-model="showSendPop" mode="bottom" height="50%" close-icon="close" close-icon-size="60">
+					<u-field
+						@click="showDeptSelect = true"
+						v-model="departmentList[departIndex].name"
+						:disabled="true"
+						label="部门"
+						placeholder="请选择部门"
+						right-icon="arrow-down-fill"
+					></u-field>
+					<u-picker v-model="showDeptSelect" @confirm="departPicker" mode="selector" :default-selector="[0]" range-key="name" :range="departmentList"></u-picker>
+
+					<u-field
+						@click="showPersonSelect = true"
+						v-model="personList[personIndex].nickname"
+						:disabled="true"
+						label="人员"
+						placeholder="请选择人员"
+						right-icon="arrow-down-fill"
+					></u-field>
+					<u-picker v-model="showPersonSelect" @confirm="personPicker" mode="selector" :default-selector="[0]" range-key="nickname" :range="personList"></u-picker>
+					<u-row gutter="16" justify="center">
+						<u-col span="6">
+							<u-row justify="center"><u-button @click="showSendPop = false" size="medium" type="warning">取消</u-button></u-row>
+						</u-col>
+						<u-col span="6" align="center">
+							<u-row justify="center"><u-button @click="sendOrder" size="medium" type="success">确认</u-button></u-row>
+						</u-col>
+					</u-row>
+				</u-popup>
+			</view>
 		</view>
 	</view>
 </template>
@@ -140,6 +161,8 @@
 export default {
 	data() {
 		return {
+			showBankSelect: false,
+			swiperCurrent: 0, // swiper组件的current值，表示当前那个swiper-item是活动的
 			stateList: [],
 			orderList: [],
 			showSheet: false,
@@ -202,7 +225,7 @@ export default {
 			},
 			queryParams: {
 				pageNum: 1,
-				pageSize: 20,
+				pageSize: 10,
 				state: 'order_status_init',
 				username: '',
 				phone: '',
@@ -210,13 +233,22 @@ export default {
 				back: '',
 				deleted: false
 			},
+			currentPageNums: [],
 			order: '',
-			total: 0,
-			totalPage: 0,
+			total: [],
+			totalPage: [],
 			status: 'loadmore',
 			userType: '',
 			showDelete: false,
-			showAnimation: true
+			showAnimation: true,
+			bankList: [],
+			brandList: [],
+			moneyList: [],
+			dictBankCode: '26612cfad91e4fffb855832432a7729b',
+			dictBrandCode: 'dfddf0d428a44413a9b8130f5b7579f7',
+			dictMoneyCode: 'e1da70506694400dbfe362dee5be2b63',
+			showBrandSelect: false,
+			showMoneySelect: false
 		};
 	},
 	mounted() {
@@ -246,9 +278,47 @@ export default {
 				} */
 				this.getDepartList();
 			}
+		},
+		current(oldVal, val) {
+			if (oldVal !== val) {
+				let currentPageNum = this.currentPageNums[this.current];
+				if(!currentPageNum){
+					currentPageNum = 1;
+				}
+				this.queryParams.pageNum = currentPageNum;
+				this.queryParams.state = this.stateList[this.current].code;
+				//this.orderList = [];
+				let list = this.orderList[this.current];
+				if (list && list.length > 0) {
+					return;
+				}
+				this.getOrderList();
+			}
 		}
 	},
 	methods: {
+		// tabs通知swiper切换
+		tabsChange(index) {
+			this.swiperCurrent = index;
+			//this.current = index;
+			// this.queryParams.pageNum = 1;
+			// this.queryParams.state = this.stateList[index].code;
+			// this.orderList = [];
+			// this.getOrderList();
+		},
+		// swiper-item左右移动，通知tabs的滑块跟随移动
+		transition(e) {
+			let dx = e.detail.dx;
+			this.$refs.uTabs.setDx(dx);
+		},
+		// 由于swiper的内部机制问题，快速切换swiper不会触发dx的连续变化，需要在结束时重置状态
+		// swiper滑动结束，分别设置tabs和swiper的状态
+		animationfinish(e) {
+			let current = e.detail.current;
+			this.$refs.uTabs.setFinishCurrent(current);
+			this.swiperCurrent = current;
+			this.current = current;
+		},
 		departPicker(index) {
 			this.departIndex = index;
 		},
@@ -257,6 +327,10 @@ export default {
 		},
 		showDrawer() {
 			this.$refs.showRight.open();
+			if (this.bankList && this.bankList.length > 0) {
+				return;
+			}
+			this.getDict(this.dictBankCode);
 		},
 		closeDrawer(type) {
 			this.$refs.showRight.close();
@@ -334,14 +408,48 @@ export default {
 				this.showDrawer();
 			}
 		},
-		onReachBottom() {
-			if (this.queryParams.pageNum >= this.totalPage) {
+		reachBottom() {
+			let currentPageNum = this.currentPageNums[this.current];
+			if(!currentPageNum){
+				currentPageNum = 1;
+			}
+			console.log("触底",currentPageNum, this.totalPage[this.current])
+			if (currentPageNum >= this.totalPage[this.current]) {
 				this.status = 'nomore';
 				return;
 			}
 			this.status = 'loading';
-			this.queryParams.pageNum = this.queryParams.pageNum + 1;
+			this.currentPageNums[this.current] = currentPageNum + 1;
+			this.queryParams.pageNum = this.currentPageNums[this.current];
 			this.getOrderList();
+		},
+		bankConfirm(index) {
+			this.queryParams.back = this.bankList[index].name;
+		},
+		async getDict(code) {
+			try {
+				this.loading = true;
+				let response = await this.$request.get(`/dictionary/list/${code}?pageNum=1&pageSize=100`);
+				console.log('字典 : ', response.data);
+				if (this.dictBankCode === code) {
+					this.bankList = response.data.data.data;
+					//this.queryParams.back = this.bankList[0].name;
+				} else if (this.dictBrandCode === code) {
+					this.brandList = response.data.data.data;
+					this.queryParams.brant = this.brandList[0].name;
+				} else if (this.dictMoneyCode === code) {
+					this.moneyList = response.data.data.data;
+					this.queryParams.money = this.moneyList[0].name;
+				}
+			} catch (e) {
+				console.log('获取字典列表失败', e);
+				this.$store.commit('showSnackbar', {
+					color: 'error',
+					text: e.response.data.message ? e.response.data.message : '获取字典列表失败'
+				});
+			} finally {
+				this.loading = false;
+			}
 		},
 		async deleteOrder(id) {
 			try {
@@ -482,7 +590,16 @@ export default {
 					});
 					return;
 				}
-				this.orderList.push(...resp.data.data.data);
+				let currentList = this.orderList[this.current];
+				if (!currentList || currentList.length < 1) {
+					this.orderList[this.current] = resp.data.data.data;
+					console.log("重新赋值",this.current)
+				} else {
+					this.orderList[this.current].push(...resp.data.data.data);
+					console.log("原数组插入赋值",this.orderList[this.current],this.current)
+				}
+				this.$set(this.orderList, this.current, this.orderList[this.current]);
+				//this.orderList.push(...resp.data.data.data);
 				if (this.stateList.length < 1) {
 					this.stateList = resp.data.data.stateList;
 					if (this.userType === 'expatriates') {
@@ -490,9 +607,9 @@ export default {
 					}
 					uni.setStorageSync('stateList', this.stateList);
 				}
-				this.totalPage = resp.data.data.totalPage;
-				this.total = resp.data.data.total;
-				if (this.queryParams.pageNum >= this.totalPage) {
+				this.totalPage[this.current] = resp.data.data.totalPage;
+				this.total[this.current] = resp.data.data.total;
+				if (this.queryParams.pageNum >= this.totalPage[this.current]) {
 					this.status = 'nomore';
 				}
 			} catch (e) {
@@ -509,12 +626,105 @@ export default {
 	},
 	onPullDownRefresh() {
 		this.orderList = [];
+		this.currentPageNums = [];
 		this.getOrderList();
 	}
 };
 </script>
 
 <style lang="scss" scoped>
+.order {
+	background-color: #ffffff;
+	margin: 2rpx auto;
+	border-radius: 20rpx;
+	box-sizing: border-box;
+	padding: 2rpx;
+	font-size: 28rpx;
+	.top {
+		display: flex;
+		justify-content: space-between;
+		.left {
+			display: flex;
+			align-items: center;
+			.store {
+				margin: 0 10rpx;
+				font-size: 32rpx;
+				font-weight: bold;
+			}
+		}
+		.right {
+			color: $u-type-warning-dark;
+		}
+	}
+	.item {
+		display: flex;
+		margin: 20rpx 0 0;
+		.left {
+			margin-right: 20rpx;
+			image {
+				width: 200rpx;
+				height: 200rpx;
+				border-radius: 10rpx;
+			}
+		}
+		.content {
+			.title {
+				font-size: 28rpx;
+				line-height: 50rpx;
+			}
+			.type {
+				margin: 10rpx 0;
+				font-size: 24rpx;
+				color: $u-tips-color;
+			}
+			.delivery-time {
+				color: #e5d001;
+				font-size: 24rpx;
+			}
+		}
+		.right {
+			margin-left: 10rpx;
+			padding-top: 20rpx;
+			text-align: right;
+			.decimal {
+				font-size: 24rpx;
+				margin-top: 4rpx;
+			}
+			.number {
+				color: $u-tips-color;
+				font-size: 24rpx;
+			}
+		}
+	}
+	.total {
+		margin-top: 20rpx;
+		text-align: right;
+		font-size: 24rpx;
+		.total-price {
+			font-size: 32rpx;
+		}
+	}
+	.bottom {
+		display: flex;
+		margin-top: 40rpx;
+		padding: 0 10rpx;
+		justify-content: space-between;
+		align-items: center;
+		.btn {
+			line-height: 52rpx;
+			width: 160rpx;
+			border-radius: 26rpx;
+			border: 2rpx solid $u-border-color;
+			font-size: 26rpx;
+			text-align: center;
+			color: $u-type-info-dark;
+		}
+		.evaluate {
+			color: $u-type-warning-dark;
+			border-color: $u-type-warning-dark;
+		}
+	}
+}
 .slot-wrap {
 	display: flex;
 	align-items: center;
@@ -534,10 +744,10 @@ export default {
 	margin-right: 24rpx;
 	display: flex;
 }
-.card-title{
+.card-title {
 	width: 140rpx;
 }
-.card-field{
+.card-field {
 	font-size: 14px;
 	padding: 12rpx;
 	margin: 4rpx;
@@ -545,5 +755,17 @@ export default {
 	position: flex;
 	flex-direction: row;
 	color: #303133;
+}
+.swiper-item {
+	height: 100%;
+}
+.swiper-box {
+	flex: 1;
+}
+.wrap {
+	display: flex;
+	flex-direction: column;
+	height: calc(100vh - var(--window-top) - 48px);
+	width: 100%;
 }
 </style>

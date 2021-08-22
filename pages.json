@@ -116,6 +116,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/index/device/device",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": true
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

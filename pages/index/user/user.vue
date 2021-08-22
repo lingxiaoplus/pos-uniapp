@@ -1,30 +1,18 @@
 <template>
 	<view>
 		<u-navbar back-text="返回" title="人员管理" :background="background" title-color="#fff" back-icon-color="#ffffff" :back-text-style="{ color: '#fff' }">
-			<!-- <view class="slot-wrap">
-				<view class="navbar-right" slot="right">
-					<view class="right-item">
-						<u-icon name="search" color="white" size="32"></u-icon>
-						
-					</view>
-				</view>
-			</view> -->
 		</u-navbar>
-		<!-- <u-sticky offset-top="0">
-		</u-sticky> -->
-		<view  class="sticky">
+		<u-sticky offset-top="0">
 			<u-tabs :list="userTypeList" :is-scroll="false" count="userNumbers"
 						:current="current" @change="change" name="roleName"></u-tabs>
-		</view>
+		</u-sticky>
 		<u-toast ref="uToast" />
-		<view class="content">
-		
-		
-			<wyb-loading ref="loading" :hide-delay="200" loading-type="scale-line" />
+		<view class="content wrap">
+			<wyb-loading ref="loading" :hide-delay="100" loading-type="scale-line" />
 			<view v-if="orderList.length < 1" class="u-flex u-col-center u-row-center" style="height: 800rpx;"><u-empty text="人员为空" mode="list"></u-empty></view>
 
 			<view v-for="(user, index) in orderList" :key="user.index" v-else>
-				<uni-transition ref="ani" :mode-class="['fade', 'zoom-in']" :duration="500" :show="showAnimation" timingFunction="ease-in-out" :delay="(index + 1) * 100">
+				<uni-transition ref="ani" :mode-class="['fade', 'zoom-in']" :duration="100" :show="showAnimation" timingFunction="ease-in-out" :delay="(index + 1) * 100">
 					<u-card :show-head="false" :show-foot="false" :border-radius="10" :padding="20" margin="16rpx" box-shadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)">
 						<view slot="body" @click="onItemClick(index)">
 							<view class="u-body-item-title u-line-2 card-field">
@@ -433,5 +421,11 @@ export default {
 	position: flex;
 	flex-direction: row;
 	color: #303133;
+}
+.wrap {
+	display: flex;
+	flex-direction: column;
+	height: calc(100vh - var(--window-top) - 48px);
+	width: 100%;
 }
 </style>
