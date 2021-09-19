@@ -193,7 +193,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.loading = true;
+		//this.loading = true;
 		let list = uni.getStorageSync('stateList');
 		if (list) {
 			this.stateList = list;
