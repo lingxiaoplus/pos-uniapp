@@ -41,10 +41,10 @@
 					<u-input type="textarea" v-model="form.feedBack" placeholder="请输入初步预约时间以及和客户沟通情况" />
 				</u-form-item>
 				<u-form-item label-width="160rpx" label="上传图片" required v-if="form.state == 'order_status_out_success' || form.state == 'order_status_out_fail'">
-					<u-upload :max-count="maxCount" :show-progress="false" :deletable="deletable" :action="action" :file-list="form.resourceList"></u-upload>
+					<u-upload :header="header" :form-data="imageFormData" :max-count="maxCount" :show-progress="false" :deletable="deletable" :action="action" :file-list="form.resourceList"></u-upload>
 				</u-form-item>
 
-				<u-collapse v-show="form.feedBackList && form.feedBackList.length > 0">
+				<u-collapse v-if="form.feedBackList && form.feedBackList.length > 0">
 					<u-collapse-item title="反馈记录">
 						<view v-for="(feedback, index) in form.feedBackList" :key="feedback.id">
 							<u-card
@@ -64,7 +64,7 @@
 									</u-row>
 								</view>
 							</u-card>
-						</view>
+						</view> 
 					</u-collapse-item>
 				</u-collapse>
 
@@ -84,7 +84,7 @@ export default {
 				username: '',
 				phone: '',
 				back: '',
-				money: '',
+				money: 0,
 				state: '',
 				stateName: '',
 				address: '',
@@ -101,6 +101,10 @@ export default {
 				brant: '',
 				resourceList: []
 			},
+			imageFormData: {
+				orderId: '',
+			},
+			header: '',
 			cardBody: {},
 			rules: {
 				username: [
@@ -190,10 +194,19 @@ export default {
 			} else {
 				this.form.money = '';
 			}
+		},
+		'form.id'(val){
+			this.imageFormData.orderId = val;
 		}
 	},
 	mounted() {
 		//this.loading = true;
+		let token = uni.getStorageSync("login-token");
+		if(token){
+			this.header = {
+				'login-token': token
+			}
+		}
 		let list = uni.getStorageSync('stateList');
 		if (list) {
 			this.stateList = list;
@@ -213,19 +226,8 @@ export default {
 
 		let form = uni.getStorageSync('order');
 		if (form) {
-			this.form = form;
-			this.form.resourceList.forEach(item => {
-				item.url =
-					item.path +
-					'?imageMogr2/thumbnail/720x/interlace/1|watermark/2/text/6ZO25Lm-56eR5oqA/font/bXN5aGJkLnR0Zg/fontsize/14/fill/IzY2NjY2Ng/dissolve/80/gravity/southeast/dx/10/dy/10';
-			});
-			if (form.money) {
-				this.showMoneySwitch = true;
-			}
+			this.getOrderDetail(form.id)
 		}
-		let user = uni.getStorageSync('user_info');
-		this.form.departId = user.departId;
-
 		this.getDict(this.dictBrandCode);
 		this.getDict(this.dictBankCode);
 		this.getDict(this.dictMoneyCode);
@@ -320,6 +322,38 @@ export default {
 					}
 				}
 			});
+		},
+		async getOrderDetail(id){
+		      try {
+		        this.$refs.loading.showLoading();
+		        let resp = await this.$request.get(`/order?id=${id}`)
+		        console.log("订单详情", resp.data)
+		        let form = resp.data.data
+		        form.feedBack = '';
+		        this.form = form;
+		        if(this.form.resourceList){
+		        	this.form.resourceList.forEach(item => {
+		        		item.url =
+		        			item.path +
+		        			'?imageMogr2/thumbnail/720x/interlace/1|watermark/2/text/6ZO25Lm-56eR5oqA/font/bXN5aGJkLnR0Zg/fontsize/14/fill/IzY2NjY2Ng/dissolve/80/gravity/southeast/dx/10/dy/10';
+		        	});
+		        }
+		        if (form.money) {
+		        	this.showMoneySwitch = true;
+		        }
+				let user = uni.getStorageSync('user_info');
+				this.form.departId = user.departId;
+		      } catch (e) {
+		        console.log("获取订单详情失败",e)
+				this.$refs.uToast.show({
+					title: '获取订单详情失败,请稍后再试',
+					icon: false,
+					position: 'bottom',
+					type: 'fail'
+				});
+		      } finally {
+		        this.$refs.loading.hideLoading();
+		      }
 		},
 		async createOrder() {
 			try {

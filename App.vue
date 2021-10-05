@@ -16,8 +16,8 @@ export default {
 			'background-image': 'linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))'
 		},
 		appid: 'wx0bf6089943ddea2b',
-		action: 'http://test.api.yinqkj.cn/file',
-		socket: 'wss://test.api.yinqkj.cn/webSocket',
+		action: 'https://yangli.api.lingxiaomz.top/file',
+		socket: 'wss://yangli.api.lingxiaomz.top/webSocket',
 	}
 };
 </script>

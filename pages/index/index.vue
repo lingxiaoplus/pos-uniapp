@@ -180,7 +180,14 @@ export default {
 				if (resp.data.code != 200) {
 					return;
 				}
-				this.isLogin();
+				resp = await this.$request.get('/user/verify');
+				if (resp.data.code != 200) {
+					uni.redirectTo({
+						url: '../user/login'
+					});
+					return;
+				}
+				this.user = resp.data.data;
 				console.log('修改成功', resp.data);
 			} catch (e) {
 				console.log('修改失败');

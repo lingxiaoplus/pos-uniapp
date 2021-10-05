@@ -141,6 +141,7 @@ export default {
 		if(userType === 'teleMarketing'){
 			this.showTeleMarketing = true;
 			this.showExpatriates = false;
+			this.getTodayDailyPaper();
 		}else if (userType === 'expatriates'){
 			this.showTeleMarketing = false;
 			this.showExpatriates = true;
@@ -156,13 +157,13 @@ export default {
 			this.getDepartList()
 		}
 		//this.$refs.uForm.setRules(this.rules);  小程序不好用
-		this.getTodayDailyPaper();
 	},
 	methods: {
 		departClick(index){
 			this.departIndex = index;
 			this.dailyPaper.departId = this.departList[index].id;
 			this.departName = this.departList[index].name;
+			this.getTodayDailyPaper();
 		},
 		save() {
 			var that = this;
@@ -318,9 +319,12 @@ export default {
 					return item.id != this.user.departId
 				});
 				this.dailyPaper.departId = this.departList[0].id;
+				this.dailyPaper = Object.assign({},this.dailyPaper, this.dailyPaper)
+				console.log('获取部门列表', this.dailyPaper);
 				this.departName = this.departList[0].name;
+				this.getTodayDailyPaper();
 			} catch (e) {
-				console.log('添加日报', e);
+				console.log('获取部门列表失败', e);
 			} finally {
 				uni.stopPullDownRefresh();
 				uni.hideLoading();

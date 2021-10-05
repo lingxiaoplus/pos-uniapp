@@ -8,7 +8,7 @@
 			</view>
 			<!-- 主体表单 -->
 			<view class="main">
-				<u-field v-model="phoneData" maxlength="11" label="手机号" placeholder="请填写手机号"></u-field>
+				<u-field v-model="phoneData" maxlength="11" label="用户名" placeholder="请填写用户名"></u-field>
 				<u-field v-model="passData" label="密码" placeholder="请填写密码" password>
 				</u-field>
 			</view>

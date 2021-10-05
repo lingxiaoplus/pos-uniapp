@@ -17,46 +17,23 @@
 		<view class="content wrap">
 			<view v-for="(device, index) in deviceList" :key="index">
 				<uni-transition ref="ani" :mode-class="['fade', 'zoom-in']" :duration="500" :show="showAnimation" timingFunction="ease-in-out" :delay="(index + 1) * 100">
-					<u-card :show-head="false" :show-foot="false" :border-radius="10" :padding="20" margin="16rpx" box-shadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)">
+					<u-card :show-head="false" :show-foot="false" :border-radius="6" :padding="8" margin="10rpx" box-shadow="0 4px 6px 0 rgba(0, 0, 0, 0.2), 0 4px 12px 0 rgba(0, 0, 0, 0.19)">
 						<view slot="body" @click="onItemClick(index)">
-							<view class="u-body-item-title u-line-2 card-field">
-								<view class="card-title">
-									品牌
-								</view>
-								{{ device.brand }}
-							</view>
-							<u-divider :use-slot="false" half-width='350'></u-divider>
-							
-							<view class="u-body-item-title u-line-2 card-field">
-								<view class="card-title">
-									部门
-								</view>
-								{{ device.departName }}
-							</view>
-							<u-divider :use-slot="false" half-width='350'></u-divider>
-							
-							<view class="u-body-item-title u-line-2 card-field">
-								<view class="card-title">
-									押金
-								</view>
-								{{ device.deposit }}
-							</view>
-							<u-divider :use-slot="false" half-width='350'></u-divider>
-							<view class="u-body-item-title u-line-2 card-field">
-								<view class="card-title">
-									状态
-								</view>
-								<u-tag :type="device.orderId ? 'info':'success'"  mode="light" :text="device.orderId ? '已使用' : '未使用'">
+							<u-cell-group :border="false">
+								<u-cell-item title="品牌" :arrow="false" :value="device.brand" />	
+								<u-cell-item title="部门" :arrow="false" :value="device.departName" />
+								<u-cell-item title="押金" :arrow="false" :value="device.deposit" />
+								<u-cell-item title="状态" :arrow="false" >
 									
-								</u-tag>
-							</view>
-							<u-divider :use-slot="false" half-width='350'></u-divider>
-							<view class="u-body-item-title u-line-2 card-field">
-								<view class="card-title">
-									机器码
-								</view>
-								{{ device.deviceNo }}
-							</view>
+									<u-tag slot="right-icon" :type="device.orderId ? 'info':'success'"  mode="light" :text="device.orderId ? '已使用' : '未使用'">
+										
+									</u-tag>
+								</u-cell-item>
+								
+								<u-cell-item title="机器码" :arrow="false" :value="device.deviceNo" />
+							</u-cell-group>
+							
+							
 							
 						</view>
 					</u-card>

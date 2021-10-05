@@ -102,6 +102,16 @@ export default {
 				width: '600rpx',
 				marginBottom: '20rpx'
 			},
+			queryParams: {
+			        userType: 'teleMarketing',
+			        departId: '',
+			        userIdList: [],
+			        startDate: '',
+			        endDate: '',
+			        pageNum: 1,
+			        pageSize: 30,
+			        isSum: false,
+			},
 			loading: false,
 			paperList: [],
 			pageNum: 1,
@@ -121,6 +131,7 @@ export default {
 	onLoad() {
 		let user = uni.getStorageSync("user_info")
 		this.userType = user.roles[0].roleTag;
+		this.queryParams.userType = user.roles[0].roleTag;
 		uni.startPullDownRefresh();
 	},
 	onPageScroll(e) {
@@ -137,14 +148,16 @@ export default {
 			try {
 				this.status = 'loading';
 				this.$refs.loading.showLoading()
-				let resp = await this.$request.get('/dailyPaper/list?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize+ "&userType=" + this.userType);
+				let resp = await this.$request.post('/dailyPaper/list',{
+					data: this.queryParams
+				});
 				if (resp.data.code != 200) {
 					return;
 				}
 				this.paperList.push(...resp.data.data.data);
 				this.totalPage = resp.data.data.totalPage;
 				this.total = resp.data.data.total;
-				if (this.pageNum >= this.totalPage) {
+				if (this.queryParams.pageNum >= this.totalPage) {
 					this.status = 'nomore';
 				}
 			} catch (e) {
@@ -155,12 +168,12 @@ export default {
 			}
 		},
 		onReachBottom() {
-			if (this.pageNum >= this.totalPage) {
+			if (this.queryParams.pageNum >= this.totalPage) {
 				this.status = 'nomore';
 				return;
 			}
 			this.status = 'loading';
-			this.pageNum = this.pageNum + 1;
+			this.queryParams.pageNum = this.queryParams.pageNum + 1;
 			this.getDailyPaperList();
 		},
 		addDailypaper() {

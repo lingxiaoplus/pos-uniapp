@@ -19,67 +19,39 @@
 							<view class="page-box">
 								<view class="order" v-for="(order, index) in orderList[i]" :key="order.id">
 									<u-card
-										:show-head="false"
 										:show-foot="false"
-										:border-radius="10"
-										:padding="20"
-										margin="16rpx"
-										box-shadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+										:border-radius="4"
+										
+										:padding="10"
+										margin="12rpx"
+										title="订单号"
+										:sub-title="order.serialNumber"
+										box-shadow="0 4px 8px 0 rgba(0, 0, 0, 0.16), 0 4px 10px 0 rgba(0, 0, 0, 0.16)"
 									>
 										<view slot="body" @click="onItemClick(order)">
-											<view class="u-body-item-title u-line-2 card-field">
-												<view class="card-title">用户姓名</view>
-												{{ order.username }}
-											</view>
-											<u-divider :use-slot="false" half-width="350"></u-divider>
-											<view class="u-body-item-title u-line-2 card-field">
-												<view class="card-title">用户电话</view>
-												{{ order.phone }}
-											</view>
-											<u-divider :use-slot="false" half-width="350"></u-divider>
-
-											<view class="u-body-item-title u-line-2 card-field">
-												<view class="card-title">营销时间</view>
-												{{ order.createAt }}
-											</view>
-											<u-divider :use-slot="false" half-width="350"></u-divider>
-
-											<view class="u-body-item-title u-line-2 card-field">
-												<view class="card-title">预约时间</view>
-												{{ order.outboundAt }}
-											</view>
-											<u-divider :use-slot="false" half-width="350"></u-divider>
-
-											<view class="u-body-item-title u-line-2 card-field">
-												<view class="card-title">订单流水</view>
-												{{ order.serialNumber }}
-											</view>
-											<u-divider :use-slot="false" half-width="350"></u-divider>
-
-											<view class="u-body-item-title u-line-2 card-field">
-												<view class="card-title">银行</view>
-												{{ order.back }}
-											</view>
-											<u-divider :use-slot="false" half-width="350"></u-divider>
-
-											<view class="u-body-item-title u-line-2 card-field">
-												<view class="card-title">电销</view>
-												<u-tag mode="light" :text="order.createUser ? order.createUser.nickname : ''">
-													<!-- {{ order.createUser ? order.createUser.nickname : '' }} -->
-												</u-tag>
-											</view>
-											<u-divider :use-slot="false" half-width="350"></u-divider>
-
-											<view class="u-body-item-title u-line-2 card-field">
-												<view class="card-title">外派</view>
-												{{ order.expatriatesUser ? order.expatriatesUser.nickname : '' }}
-											</view>
-											<u-divider :use-slot="false" half-width="350"></u-divider>
-
-											<view class="u-body-item-title u-line-2 card-field">
+											<u-cell-group :border="false">
+												<u-cell-item icon="account" title="用户姓名" :arrow="false" :value="order.username" />	
+												<u-cell-item icon="phone" title="用户电话" :arrow="false" :value="order.phone" />
+												<u-cell-item icon="clock" title="营销时间" :arrow="false" :value="order.createAt" />
+												<u-cell-item icon="clock" title="预约时间" :arrow="false" :value="order.outboundAt" />
+												<u-cell-item icon="red-packet" title="银行" :arrow="false" :value="order.back" />
+												<u-cell-item icon="kefu-ermai" title="电销" :arrow="false" >
+													<u-tag slot="right-icon" mode="light" :text="order.createUser ? order.createUser.nickname : ''">
+													</u-tag>
+												</u-cell-item>
+												<u-cell-item icon="car" title="外派" :arrow="false" >
+													<u-tag slot="right-icon" mode="light" :text="order.expatriatesUser ? order.expatriatesUser.nickname : ''">
+														
+													</u-tag>
+													
+												</u-cell-item>
+												<u-cell-item icon="map" title="地址" :arrow="false" :value="order.address" />
+											</u-cell-group>
+											
+											<!-- <view class="u-body-item-title u-line-2 card-field">
 												<view class="card-title">地址</view>
 												{{ order.address }}
-											</view>
+											</view> -->
 										</view>
 									</u-card>
 								</view>
@@ -350,6 +322,7 @@ export default {
 							// 为指定事件添加一个监听器，获取被打开页面传送到当前页面的数据
 							refreshOrderList: function(data) {
 								that.orderList = [];
+								that.stateList = [];
 								that.getOrderList();
 								console.log('刷新order list', data);
 							}
@@ -464,6 +437,7 @@ export default {
 				}
 				this.queryParams.pageNum = 1;
 				this.orderList = [];
+				this.stateList = [];
 				this.getOrderList();
 			} catch (e) {
 				console.log('删除订单失败', e);
@@ -504,6 +478,7 @@ export default {
 					return;
 				}
 				this.showSendPop = false;
+				this.stateList = [];
 				this.getOrderList();
 			} catch (e) {
 				this.$refs.uToast.show({
